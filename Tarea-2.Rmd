@@ -1,0 +1,134 @@
+--------------------------------------------------------------------------------
+title: "TAREA 2"
+--------------------------------------------------------------------------------
+
+---------------------------- FUNCIONES EN R ------------------------------------
+Una función es utilizada cuando se requiere realizar procedimientos especificos 
+que contienen instrucciones que reciben párametros como argumentos que son 
+considerados como entradas y la función devuelve respuestas como salidas.
+
+#Estructura de una función
+*Entradas o argumentos: es la información que ingresamos para realizar un
+procedimiento en la función. Los valores pueden ser ingresados por el usuario 
+o pueden ser valores por defecto, por lo cual si el usuario no ingresa un valor 
+se utilizara el valor prestablecido.
+
+*Cuerpo: esta formado por un conjunto de instrucciones que procesan las entradas
+en salidas. Si se utilizan varias instrucciones estas deben ir entre { }.
+
+*Salidas: es el resultado de la función. Si la salida contiene varias  tipos de 
+objetos es aconsejable organizarlos en una lista que los contenga.
+
+```{r}
+nombre_funcion <- function(arg_1, arg_2, ...){
+  #cuerpo
+  #instrucciones
+  return(resultado)
+}
+```
+
+#Ejemplo
+```{r}
+
+suma <- function(x,y){
+  resultado <- x + y
+  return(resultado)
+}
+suma(x = 5, y = 10 )
+
+resta <- function(a,b){
+  resultado <- a - b
+  cat("La resta es: ", resultado)
+}
+
+resta(a = 10, b = 3)
+```
+#Argumentos de una función
+Los argumentos son los valores de entrada de las funciones, estos son variables
+que toman el valor asignado por el usuario. Para enviar estos valores a la función
+existen diferentes formas:
+suma(x = 5, y = 10 )
+suma(y = 10, x = 5 )
+suma(5, 10 ): asigna el primer número a la primer variable declarada en la función,
+así sucesivamente.
+
+
+#Argumentos por valor
+Esta forma de pasar los valores de los parámetros a la función consta en que la
+información de la variable se almacena en una dirección de memoria diferente al
+momento de ser recibida en la función, por lo tanto si el valor de esa variable 
+cambia, no afecta a la variable orignal, solamente se modifica dentro del contexto
+de la función. Normalmente se utiliza en datos del tipo: enteros, flotantes, cadenas o lógigos.
+
+----------------------- FAMILIA APPLY --------------------------
+
+#lapply
+Es una vaiante de la función apply(), esta se basa en aplicar funciones a todos
+los elementos de una lista o vector. Es decir que esta función intentará aplicar
+a una lista el objeto que demos como argumento y después aplicará una función 
+a todos sus elementos, devolviendo como resultado una lista.
+
+#Uso de lapply con funciones
+
+lapply(lista, funcion, ...)
+
+*Puede ser una lista o vector
+*Puede ser una función propia de R u otra
+*Podemos agregar argumentos adicionales a la función
+
+#Ejemplos
+
+```{r}
+#Iterar sobre un vector
+my_vector <- c(9, 16, 8)
+lapply(my_vector, sqrt)
+
+#Iterar sobre una lista
+my_list <- list(A <- c(8,9,7,5), B <- data.frame(x <- 1:5, y <- c(5,1,0,2,3)))
+lapply(my_list, sum)
+
+#Función propia
+a <- 1:5
+lapply(a, FUN = function(x) x^2)
+```
+#Sapply
+Aplica funciones a una lista o vector y devuelve como respuesta un vector, una 
+lista o una matriz. La diferencia con lapply radica en que sapply puede cambiar
+la forma en que presenta los resultados.
+
+#Uso de sapply con funciones
+
+sapply(lista, funcion, ..., simplify = TRUE)
+
+*Vector o lista
+*Función a ser aplicada
+*Argumentos adicionales de la función
+*Si es FALSE devuelve una lista, de lo contrario un vector.
+
+#Ejemplos
+```{r}
+sapply(1:4, sqrt)
+sapply(1:10, function(x) x^2)
+
+#Iterar sobre una lista
+my_list_2 <- list(A <- 1:6, B = 6:15, C <- c(1,2,3))
+sapply(my_list_2, length)
+```
+#Vapply
+Su aplicación es similar a las funciones anteriores, con la única diferencia que 
+se debe especificar el tipo de dato que se esta iterando, de esta forma aseguramos 
+que la salida obtenida sea la requerida.
+
+#Uso de vapply con funciones
+
+vapply(lista, funcion, tipo_dato)
+
+#Ejemplos
+```{r}
+my_list_3 <- list(1:5, letters[1:3], 8)
+vapply(my_list_3, length, integer(1))
+
+my_list_4 <- list(number <- 125.5, name <- "Luis")
+vapply(my_list_4, class, FUN.VALUE = character(1))
+```
+
