@@ -1,0 +1,64 @@
+CARGANDO LOS DATOS A R
+
+```{r}
+library("dplyr")
+
+dataset_result <- read.csv("primary_results.csv", header = TRUE, sep = ",")
+
+dataset_result
+```
+
+#---------------------------------1------------------------------------
+FILTRAR VOTOS DE FLORIDA
+```{r}
+dataset_result %>%
+  filter(state == "Florida") 
+```
+
+#----------------------------------2--------------------------------------------
+#---------------------------------2.1-------------------------------------------
+FILTRAR VOTOS DE HILLARY CLINTON Y DONALD TRUMP
+```{r}
+dataset_result %>%
+  filter(candidate == "Hillary Clinton" | candidate == "Donald Trump")
+```
+#---------------------------------2.2-------------------------------------------
+FILTRAR VOTOS PARA EL PARTIDO DEMOCRATA Y EL CONDADO SHELBY
+```{r}
+dataset_result %>%
+  filter(party == "Democrat" & county == "Shelby")
+```
+#---------------------------------2.3-------------------------------------------
+FILTRAR VOTOS PARA EL ESTADO DE ALABAMA Y VOTOS MAYOR A 15000
+```{r}
+dataset_result %>%
+  filter(state == "Alabama", votes > 15000)
+```
+
+#----------------------------------3--------------------------------------------
+#---------------------------------3.1-------------------------------------------
+FILTRAR VOTOS PARA EL ESTADO DE TEXAS Y EL CONDADO DENTON
+SELECCIONAR LAS COLUMNAS party, candidate y votes
+ORDENAR DESCENTEMENTE LA COLUMNA votes
+
+```{r}
+dataset_result %>%
+  filter(state == "Texas", county == "Denton") %>%
+  select(party, candidate, votes) %>%
+  arrange(desc(votes))
+```
+
+#----------------------------------4--------------------------------------------
+#---------------------------------4.1-------------------------------------------
+FILTRAR EL PARTIDO REPUBLICANO, CANDIDATO TED CRUZ EN EL ESTADO DE ALASKA
+AGREGAR COLUMNA vote_count QUE SEA EL RESULTADO DE votes/fraction_votes
+ORDENAR DESCENDENTEMENTE vote_count
+```{r}
+dataset_result %>%
+  filter(party == "Republican", candidate == "Ted Cruz", state == "Alaska") %>%
+  mutate(vote_count = votes/fraction_votes) %>%
+  arrange(desc(vote_count))
+
+```
+
+
