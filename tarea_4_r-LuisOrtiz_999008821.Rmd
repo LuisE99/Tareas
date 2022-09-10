@@ -1,0 +1,84 @@
+------------------------------TAREA 4-------------------------------------------
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+diamonds <- read.csv("diamonds.csv")
+
+str(diamonds)
+```
+#-----------------------------1 DISPERSIÓN--------------------------------------
+#--------------------------- 1.1 Gráfico ---------------------------------------
+#-------------------- 1.2 Agregar clarity en color -----------------------------
+#--------------------- 1.3 Mostrar el gráfico ----------------------------------
+```{r}
+ggplot(diamonds, aes(x = carat, y = price, color = clarity)) +
+  geom_point()
+```
+
+#-----------------------------2 HISTOGRAMA--------------------------------------
+#--------------------------- 2.1 Gráfico ---------------------------------------
+```{r}
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 40)
+```
+#----------------- 2.2 Agregar escala logarítmica base 10 ----------------------
+```{r}
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 40) + 
+  scale_x_log10()
+```
+
+#------------------------------3 BOXPLOTS---------------------------------------
+#---------------------------- 3.1 Gráfico --------------------------------------
+#------------------- 3.2 Agregar color a cada caja -----------------------------
+```{r}
+ggplot(diamonds, aes(x = cut, y = price, fill = cut)) +
+  geom_boxplot() + 
+  scale_y_log10()
+```
+
+#------------------------------4 FACETING---------------------------------------
+#------------------------- 4.1 Filtrar diamons----------------------------------
+```{r}
+filtered_price <- diamonds %>%
+  filter(price > 1000, cut %in% c("Good", "Ideal", "Premium"))
+
+```
+
+#------------------------ 4.2 Gráfico de barras --------------------------------
+#---------------------- 4.3 Aplicar faceting -----------------------------------
+#------------------- 4.4 Agregar fill con clarity ------------------------------
+```{r}
+ggplot(filtered_price, aes(x = cut, y = depth, fill =clarity)) +
+  geom_col() +
+  facet_wrap(~ clarity)
+```
+
+------------------------- GROUPING AND SUMMARIZING -----------------------------
+#-------------------------- 1 Encontrar la media -------------------------------
+```{r}
+median_dimension_diamond <- diamonds %>%
+  group_by(cut) %>%
+  summarise(mediaX = mean(x), mediaY = mean(y), mediaZ = mean(z))
+
+median_dimension_diamond
+```
+
+#--------------------- 2 Encontrar el minimo y maximo --------------------------
+```{r}
+cut_premium <- diamonds %>%
+  filter(cut == "Premium") %>%
+  group_by(clarity) %>%
+  summarise(minPrice = min(price), maxPrice = max(price))
+
+cut_premium
+```
+
+#-------------------------- 3 Gráfico de barras -------------------------------
+```{r}
+ggplot(cut_premium, aes(x = clarity, y = maxPrice, fill = clarity)) + 
+  geom_col()
+```
+

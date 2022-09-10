@@ -1,0 +1,65 @@
+#--------------------CARGANDO LOS ARCHIVOS .csv---------------------------------
+```{r}
+question = read.csv("questions.csv")
+answers = read.csv("answers.csv")
+tags = read.csv("tags.csv")
+question_tags = read.csv("question_tags.csv")
+```
+
+#----------------------------1. LEFT-JOINING------------------------------------
+#-------------------1.1. QUESTIONS & QUESTIONS_TAGS-----------------------------
+#--------------------------1.2. AGREGAR TAGS------------------------------------
+#----------------------1.3. REEMPLAZAR NA CON only-r----------------------------
+#------------------1.4. ALMACENAR EN QUESTIONS_WITH_TAGS------------------------
+```{r}
+question_with_tags <- question %>%
+  left_join(question_tags, by = c("id" = "question_id")) %>%
+  left_join(tags, by = "id") %>%
+  replace_na(list(tag_name = "only-r"))
+```
+
+#--------------------------2. COMPARING SCORES----------------------------------
+#------------------------2.1. QUESTIONS & TAGS----------------------------------
+#-----------------------2.2. APLICAR SUMMARISE----------------------------------
+#--------------------2.3. ORDENAR DESCENDENTEMENTE------------------------------
+```{r}
+question_with_tags %>%
+  group_by(tag_name) %>%
+  summarise(mean_score = mean(score)) %>%
+  arrange(desc(mean_score))
+```
+
+#----------------------------3. FINDING GAPS------------------------------------
+#----------------------------3.1. INNER JOIN------------------------------------
+#----------------------3.2. AGREGAR COLUMNA GAP---------------------------------
+```{r}
+question %>%
+  inner_join(answers, by = c("id" = "question_id"), suffix = c("_question", "_answer")) %>%
+  mutate(gap = as.Date(creation_date_answer) - as.Date(creation_date_question))
+```
+
+#----------------------------4. JOINING------------------------------------
+#------------------4.1. CONTAR Y ORDENAR question_id----------------------------
+```{r}
+answers_counts <- answers %>%
+  count(question_id) %>%
+  arrange(desc(n))
+```
+#-------------4.2. RELACIONAR questions CON answer_counts-----------------------
+#----------------------4.3. REEMPLAZAR NA CON CEROS-----------------------------
+#----------------4.4. ALMACENAR EN QUESTIONS_ANSWER_COUNTS----------------------
+```{r}
+question_answer_count <- question %>%
+  left_join(answers_counts, by = c("id" = "question_id")) %>%
+  replace_na(list(n = 0))
+```
+
+#-------------------------------5. JOINING--------------------------------------
+#----------------------------5.1. INNER JOIN------------------------------------
+#-------------------------5.2. AGREGAR TABLA tags-------------------------------
+```{r}
+question_tags %>%
+  inner_join(question_answer_count, by = c("question_id" = "id")) %>%
+  inner_join(tags, by = c("question_id" = "id"))
+```
+
